@@ -1,0 +1,58 @@
+.container {
+    height: 100vh;
+    background: url('../../../assets/img/montana1.jpg') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .login-box {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .logo {
+    height: 60px; /* ajusta según lo que necesites */
+    background: url('../../../assets/img/OXINEU_negre2.png') no-repeat center center;
+    background-size: contain;
+    margin-bottom: 20px;
+  }
+  
+  input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: transparent;
+    border: 1px solid white;
+    border-radius: 5px;
+    color: white;
+  }
+  
+  button {
+    background-color: #e84971;
+    border: none;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .footer {
+    margin-top: 15px;
+    font-size: 0.9em;
+  }
+  
+  .footer a {
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+  }
