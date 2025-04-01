@@ -1,0 +1,61 @@
+
+.menu-container {
+  height: 100vh;
+  background: url('../../../assets/img/montana1.jpg') no-repeat center center/cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* Header */
+header {
+  position: relative;
+  z-index: 2;
+  height: 60px;
+}
+
+/* Círculo con iniciales */
+.profile-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #005fc4;
+  border-radius: 50%;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  padding-top: 100px;
+}
+
+.card {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  border: none;
+  color: white;
+  border-radius: 15px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.mb-4 {
+  font-family: 'Arial', sans-serif;
+}
