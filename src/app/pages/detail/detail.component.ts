@@ -6,38 +6,16 @@ import { Router, RouterModule } from '@angular/router';
   selector: 'app-detail',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  template: `
-    <div class="container mt-5 text-white">
-      <h2 class="text-center mb-4">Dades en detall</h2>
-      <div class="table-responsive">
-        <table class="table table-bordered table-sm text-white">
-          <tbody>
-            <tr *ngFor="let row of data">
-              <td *ngFor="let cell of row">{{ cell }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="text-center mt-4">
-        <a routerLink="/menu" class="btn btn-outline-light">Tornar al menú</a>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .container {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 30px;
-      border-radius: 10px;
-    }
-  `]
+  templateUrl: './detail.component.html',
+  styleUrls: ['./detail.component.css']
 })
-
 export class DetailComponent {
   data: any[][] = [];
   fileName = '';
   selectedSheet = '';
   selectedDate = '';
   excelData: any[][] = [];
+  selectedCells: { row: number, col: number }[] = [];
 
   constructor(private router: Router) {
     const nav = this.router.getCurrentNavigation();
@@ -48,5 +26,48 @@ export class DetailComponent {
     this.selectedSheet = state?.['selectedSheet'] || '';
     this.selectedDate = state?.['selectedDate'] || '';
     this.excelData = state?.['excelData'] || [];
+  }
+
+  toggleSelection(row: number, col: number) {
+    const index = this.selectedCells.findIndex(c => c.row === row && c.col === col);
+    if (index >= 0) {
+      this.selectedCells.splice(index, 1);
+    } else {
+      this.selectedCells.push({ row, col });
+    }
+  }
+
+  isSelected(row: number, col: number): boolean {
+    return this.selectedCells.some(c => c.row === row && c.col === col);
+  }
+
+  enviarMissatges() {
+    const resultats = new Map<string, string>();
+  
+    this.selectedCells
+      .map(c => String(this.data[c.row][c.col]))
+      .filter(Boolean)
+      .forEach((text: string) => {
+        const match = text.match(/(\b\d{9}\b)/); // número de 9 dígits
+  
+        if (match) {
+          const numero = match[1];
+          const parts = text.split(' ');
+          const index = parts.findIndex(p => p.includes(numero));
+          const nomParts = parts.slice(Math.max(0, index - 2), index);
+          const nom = nomParts.join(' ') || '-';
+  
+          // només afegim si el número no s'ha vist abans
+          if (!resultats.has(numero)) {
+            resultats.set(numero, nom);
+          }
+        }
+      });
+  
+    const telefons = Array.from(resultats.entries()).map(
+      ([numero, nom]) => `${nom} - ${numero}`
+    );
+  
+    alert('Números seleccionats:\n\n' + telefons.join('\n'));
   }
 }

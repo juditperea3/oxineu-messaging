@@ -1,1 +1,22 @@
-<p>detail works!</p>
+<div class="container mt-5 text-white">
+    <h2 class="text-center mb-4">Dades en detall</h2>
+  
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm text-white">
+        <tbody>
+          <tr *ngFor="let row of data; let rowIndex = index">
+            <td *ngFor="let cell of row; let colIndex = index"
+                (click)="toggleSelection(rowIndex, colIndex)"
+                [ngClass]="{ 'selected-cell': isSelected(rowIndex, colIndex) }">
+              {{ cell }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="text-center mt-4">
+      <button class="btn btn-success me-2" (click)="enviarMissatges()">Enviar missatges</button>
+      <a routerLink="/menu" class="btn btn-outline-light">Tornar al menú</a>
+    </div>
+  </div>

@@ -1,0 +1,14 @@
+.container {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 10px;
+  }
+  
+  td {
+    cursor: pointer;
+  }
+  
+  .selected-cell {
+    background-color: #0d6efd !important;
+    color: white;
+  }
