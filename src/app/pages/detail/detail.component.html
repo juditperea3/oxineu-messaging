@@ -20,3 +20,25 @@
       <a routerLink="/menu" class="btn btn-outline-light">Tornar al menú</a>
     </div>
   </div>
+  
+  <!-- Modal personalitzat -->
+  <div class="modal d-block" tabindex="-1" *ngIf="showModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h5 class="modal-title">Números seleccionats</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="tancarModal()"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group">
+            <li class="list-group-item bg-transparent text-white border-0" *ngFor="let tel of telefonsSeleccionats">
+              {{ tel }}
+            </li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="tancarModal()">Tancar</button>
+        </div>
+      </div>
+    </div>
+  </div>

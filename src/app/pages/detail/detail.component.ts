@@ -16,6 +16,8 @@ export class DetailComponent {
   selectedDate = '';
   excelData: any[][] = [];
   selectedCells: { row: number, col: number }[] = [];
+  showModal: boolean = false;
+  telefonsSeleccionats: string[] = [];
 
   constructor(private router: Router) {
     const nav = this.router.getCurrentNavigation();
@@ -43,31 +45,33 @@ export class DetailComponent {
 
   enviarMissatges() {
     const resultats = new Map<string, string>();
-  
+
     this.selectedCells
       .map(c => String(this.data[c.row][c.col]))
       .filter(Boolean)
       .forEach((text: string) => {
-        const match = text.match(/(\b\d{9}\b)/); // número de 9 dígits
-  
+        const match = text.match(/(\b\d{9}\b)/);
         if (match) {
           const numero = match[1];
           const parts = text.split(' ');
           const index = parts.findIndex(p => p.includes(numero));
           const nomParts = parts.slice(Math.max(0, index - 2), index);
           const nom = nomParts.join(' ') || '-';
-  
-          // només afegim si el número no s'ha vist abans
+
           if (!resultats.has(numero)) {
             resultats.set(numero, nom);
           }
         }
       });
-  
-    const telefons = Array.from(resultats.entries()).map(
+
+    this.telefonsSeleccionats = Array.from(resultats.entries()).map(
       ([numero, nom]) => `${nom} - ${numero}`
     );
-  
-    alert('Números seleccionats:\n\n' + telefons.join('\n'));
+
+    this.showModal = true;
+  }
+
+  tancarModal() {
+    this.showModal = false;
   }
 }
