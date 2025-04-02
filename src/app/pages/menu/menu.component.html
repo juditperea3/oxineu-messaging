@@ -1,26 +1,65 @@
 <div class="menu-container">
-    <div class="overlay"></div>
-  
-    <!-- Header -->
-    <header class="navbar navbar-dark bg-dark px-4 d-flex justify-content-end align-items-center">
-      <div class="d-flex align-items-center gap-3">
-        <div class="profile-circle text-white">OG</div>
-        <button class="btn btn-outline-light btn-sm">Logout</button>
-      </div>
-    </header>
-  
-    <!-- Contenido principal -->
-    <div class="content container text-white">
-      <h1 class="mb-4 text-center">Benvinguda, Judit!</h1>
-      <div class="text-center mb-4">
-        <label for="fileInput" class="btn btn-primary rounded-circle upload-btn" title="Carregar Excel">
-          <i class="bi bi-upload"></i>
-        </label>
-        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" (change)="onFileSelected($event)" hidden>
-        <p class="mt-2">Carregar Excel</p>
-      </div>
-      <div class="row justify-content-center">
-        <!-- Aquí puedes añadir tus cards -->
-      </div>
+  <div class="overlay"></div>
+
+  <!-- Header -->
+  <header class="navbar navbar-dark bg-dark px-4 d-flex justify-content-end align-items-center">
+    <div class="d-flex align-items-center gap-3">
+      <div class="profile-circle text-white">JP</div>
+      <button class="btn btn-outline-light btn-sm">Logout</button>
+    </div>
+  </header>
+
+  <!-- Contingut principal -->
+  <div class="content container text-white">
+    <h1 class="mb-4 text-center">{{ salutacio }}, Judit!</h1>
+
+    <!-- Botó per carregar Excel -->
+    <div class="text-center mb-4">
+      <label for="fileInput" class="btn btn-primary rounded-circle upload-btn" title="Carregar Excel">
+        <i class="bi bi-upload"></i>
+      </label>
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" (change)="onFileSelected($event)" hidden>
+      <p class="mt-2">Carregar Excel</p>
+    </div>
+
+ <!-- Selecció de fulla i data a la mateixa fila -->
+<div *ngIf="sheetNames.length > 0" class="container mb-4">
+  <div class="row justify-content-center g-3 align-items-end">
+    <div class="col-auto text-center">
+      <label for="sheetSelect" class="form-label">Selecciona la fulla:</label>
+      <select
+        id="sheetSelect"
+        class="form-select"
+        [(ngModel)]="selectedSheet"
+        (change)="onSheetSelected(selectedSheet)">
+        <option *ngFor="let sheet of sheetNames" [value]="sheet">{{ sheet }}</option>
+      </select>
+    </div>
+
+    <div class="col-auto text-center" *ngIf="availableDates.length > 0">
+      <label for="dateSelect" class="form-label">Selecciona una data:</label>
+      <select
+        id="dateSelect"
+        class="form-select"
+        [(ngModel)]="selectedDate"
+        (change)="onDateSelected()">
+        <option *ngFor="let date of availableDates" [value]="date">{{ date }}</option>
+      </select>
     </div>
   </div>
+</div>
+
+    <!-- Mostra dades filtrades -->
+    <div *ngIf="filteredData.length > 0" class="table-responsive text-white mt-4">
+      <table class="table table-bordered table-sm text-white">
+        <tbody>
+          <tr *ngFor="let row of filteredData">
+            <td *ngFor="let cell of row">{{ cell }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+  </div>
+</div>
