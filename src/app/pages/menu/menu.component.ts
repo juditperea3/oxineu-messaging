@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -21,7 +22,7 @@ export class MenuComponent {
   availableDates: string[] = [];
   selectedDate: string = '';
 
-  constructor() {
+  constructor(private router: Router) {
     const hora = new Date().getHours();
     if (hora >= 6 && hora < 12) {
       this.salutacio = 'Bon dia';
@@ -126,5 +127,11 @@ export class MenuComponent {
     const endIndex = startIndex + 23;
     const limitedData = this.excelData.slice(startIndex, endIndex + 1);
     this.filteredData = limitedData.map(row => row.slice(0, 35)); // columnes A-Z (índex 0 a 25)
+  }
+
+  veureEnDetall() {
+    this.router.navigate(['/detall'], {
+      state: { dades: this.filteredData }
+    });
   }
 }
