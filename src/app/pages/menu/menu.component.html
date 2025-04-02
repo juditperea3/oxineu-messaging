@@ -12,6 +12,13 @@
     <!-- Contenido principal -->
     <div class="content container text-white">
       <h1 class="mb-4 text-center">Benvinguda, Judit!</h1>
+      <div class="text-center mb-4">
+        <label for="fileInput" class="btn btn-primary rounded-circle upload-btn" title="Carregar Excel">
+          <i class="bi bi-upload"></i>
+        </label>
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" (change)="onFileSelected($event)" hidden>
+        <p class="mt-2">Carregar Excel</p>
+      </div>
       <div class="row justify-content-center">
         <!-- Aquí puedes añadir tus cards -->
       </div>
