@@ -17,7 +17,7 @@ export class DetailComponent {
   excelData: any[][] = [];
   selectedCells: { row: number, col: number }[] = [];
   showModal: boolean = false;
-  telefonsSeleccionats: string[] = [];
+  telefonsSeleccionats: { nom: string; numero: string; link: string }[] = [];
 
   constructor(private router: Router) {
     const nav = this.router.getCurrentNavigation();
@@ -45,6 +45,7 @@ export class DetailComponent {
 
   enviarMissatges() {
     const resultats = new Map<string, string>();
+    const missatge = `La teva opinió sobre OXINEU Guies de muntanya i Escola d'esquí ens interessa. Publica una ressenya al nostre perfil.\n https://g.page/r/CY9boA3ccs42EAE/review`;
 
     this.selectedCells
       .map(c => String(this.data[c.row][c.col]))
@@ -65,7 +66,11 @@ export class DetailComponent {
       });
 
     this.telefonsSeleccionats = Array.from(resultats.entries()).map(
-      ([numero, nom]) => `${nom} - ${numero}`
+      ([numero, nom]) => ({
+        nom,
+        numero,
+        link: `https://wa.me/34${numero}?text=${encodeURIComponent(missatge)}`
+      })
     );
 
     this.showModal = true;

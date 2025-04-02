@@ -31,8 +31,18 @@
         </div>
         <div class="modal-body">
           <ul class="list-group">
-            <li class="list-group-item bg-transparent text-white border-0" *ngFor="let tel of telefonsSeleccionats">
-              {{ tel }}
+            <li
+              class="list-group-item bg-transparent text-white border-0"
+              *ngFor="let tel of telefonsSeleccionats"
+            >
+              {{ tel.nom }} -
+              <a
+                [href]="tel.link"
+                target="_blank"
+                class="text-info text-decoration-underline"
+              >
+                {{ tel.numero }}
+              </a>
             </li>
           </ul>
         </div>
