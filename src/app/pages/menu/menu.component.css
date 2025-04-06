@@ -73,14 +73,14 @@ h1 {
   height: 64px;
   border-radius: 50%;
   background-color: #2962ff;
-  color: white;
-  font-size: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  background-image: url('../../../assets/img/exportar-2.png');
+  background-size: 30px 30px;
+  background-position: center;
+  background-repeat: no-repeat;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: inline-block;
 }
 
 .upload-btn:hover {
