@@ -1,54 +1,43 @@
-<div class="container mt-5 text-white">
-    <h2 class="text-center mb-4">Dades en detall</h2>
-  
-    <div class="table-responsive">
-      <table class="table table-bordered table-sm text-white">
-        <tbody>
-          <tr *ngFor="let row of data; let rowIndex = index">
-            <td *ngFor="let cell of row; let colIndex = index"
-                (click)="toggleSelection(rowIndex, colIndex)"
-                [ngClass]="{ 'selected-cell': isSelected(rowIndex, colIndex) }">
-              {{ cell }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="text-center mt-4">
-      <button class="btn btn-success me-2" (click)="enviarMissatges()">Enviar missatges</button>
-      <a routerLink="/menu" class="btn btn-outline-light">Tornar al menú</a>
-    </div>
+<div class="detall-container">
+  <h2 class="titol">Dades en detall</h2>
+
+  <div class="taula-scroll">
+    <table>
+      <tbody>
+        <tr *ngFor="let row of data; let rowIndex = index">
+          <td *ngFor="let cell of row; let colIndex = index"
+              (click)="toggleSelection(rowIndex, colIndex)"
+              [ngClass]="{ 'selected-cell': isSelected(rowIndex, colIndex) }">
+            {{ cell }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  
-  <!-- Modal personalitzat -->
-  <div class="modal d-block" tabindex="-1" *ngIf="showModal">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-white">
-        <div class="modal-header">
-          <h5 class="modal-title">Números seleccionats</h5>
-          <button type="button" class="btn-close btn-close-white" (click)="tancarModal()"></button>
-        </div>
-        <div class="modal-body">
-          <ul class="list-group">
-            <li
-              class="list-group-item bg-transparent text-white border-0"
-              *ngFor="let tel of telefonsSeleccionats"
-            >
-              {{ tel.nom }} -
-              <a
-                [href]="tel.link"
-                target="_blank"
-                class="text-info text-decoration-underline"
-              >
-                {{ tel.numero }}
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" (click)="tancarModal()">Tancar</button>
-        </div>
+
+  <div class="botons">
+    <button class="boto verd" (click)="enviarMissatges()">Enviar missatges</button>
+    <a routerLink="/menu" class="boto blanc">Tornar al menú</a>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Números seleccionats</h3>
+        <button class="tancar" (click)="tancarModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li *ngFor="let tel of telefonsSeleccionats">
+            {{ tel.nom }} -
+            <a [href]="tel.link" target="_blank">{{ tel.numero }}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="boto gris" (click)="tancarModal()">Tancar</button>
       </div>
     </div>
   </div>
+</div>

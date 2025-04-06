@@ -1,24 +1,131 @@
-.container {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 30px;
-    border-radius: 10px;
-  }
-  
-  td {
-    cursor: pointer;
-  }
-  
-  .selected-cell {
-    background-color: #0d6efd !important;
-    color: white;
-  }
+.detall-container {
+  background-color: #666;
+  padding: 40px;
+  border-radius: 12px;
+  color: white;
+  font-family: Arial, sans-serif;
+  max-width: 95%;
+  margin: 30px auto;
+}
 
-  .modal {
-    background-color: rgba(0, 0, 0, 0.6);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1050;
-  }
+.titol {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+/* Taula scrollable */
+.taula-scroll {
+  overflow-x: auto;
+  max-height: 65vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: black;
+}
+
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-width: 100px;
+  cursor: pointer;
+}
+
+.selected-cell {
+  background-color: #005fc4;
+  color: white;
+}
+
+/* Botons */
+.botons {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  gap: 16px;
+}
+
+.boto {
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+.verd {
+  background-color: #28a745;
+  color: white;
+}
+
+.blanc {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.gris {
+  background-color: #555;
+  color: white;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #222;
+  padding: 30px;
+  border-radius: 10px;
+  color: white;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tancar {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-body ul {
+  list-style: none;
+  padding: 0;
+}
+
+.modal-body li {
+  margin-bottom: 12px;
+}
+
+.modal-body a {
+  color: #1e90ff;
+  text-decoration: underline;
+}
+
+.modal-footer {
+  margin-top: 20px;
+  text-align: right;
+}
