@@ -28,4 +28,5 @@ export class HomeComponent {
       alert('Credenciales incorrectas');
     }
   }
+  onGoogleSignIn(){}
 }

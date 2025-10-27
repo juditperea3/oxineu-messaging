@@ -15,8 +15,8 @@ export class DetailComponent {
   selectedSheet = '';
   selectedDate = '';
   excelData: any[][] = [];
-  selectedCells: { row: number, col: number }[] = [];
-  showModal: boolean = false;
+  selectedCells: { row: number; col: number }[] = [];
+  showModal = false;
   telefonsSeleccionats: { nom: string; numero: string; link: string }[] = [];
 
   constructor(private router: Router) {
@@ -41,6 +41,16 @@ export class DetailComponent {
 
   isSelected(row: number, col: number): boolean {
     return this.selectedCells.some(c => c.row === row && c.col === col);
+  }
+
+  /** ✅ Selecciona totes les caselles */
+  seleccionarTot() {
+    this.selectedCells = [];
+    for (let r = 0; r < this.data.length; r++) {
+      for (let c = 0; c < this.data[r].length; c++) {
+        this.selectedCells.push({ row: r, col: c });
+      }
+    }
   }
 
   enviarMissatges() {

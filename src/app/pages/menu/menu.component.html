@@ -5,7 +5,7 @@
   <header class="navbar navbar-dark bg-dark px-4 d-flex justify-content-end align-items-center">
     <div class="d-flex align-items-center gap-3">
       <div class="profile-circle text-white">JPL</div>
-      <button routerLink="/home" class="btn btn-outline-light btn-sm">Logout</button>
+      <!-- <button routerLink="/home" class="btn btn-outline-light btn-sm">Logout</button> -->
     </div>
   </header>
 
@@ -20,6 +20,14 @@
       </label>
       <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" (change)="onFileSelected($event)" hidden>
       <p class="mt-2">Carregar Excel</p>
+    </div>
+
+    <!-- Botó per carregar Excel des de Google Drive -->
+    <div class="text-center mb-4">
+      <label class="btn btn-danger rounded-circle upload-btn" title="Carregar Excel des de Google Drive" (click)="onGoogleDriveLogin()">
+        <i class="bi bi-google"></i>
+      </label>
+      <p class="mt-2">Carregar Excel des de Google Drive</p>
     </div>
 
  <!-- Selecció de fulla i data a la mateixa fila -->
