@@ -83,12 +83,29 @@ export class MenuComponent implements OnInit {
   }
 
   private onPickerApiLoad() {
-    const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
-      .setMimeTypes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv')
-      .setSelectFolderEnabled(false);
+    // 📄 Els MEUS fitxers
+    const myFilesView = new google.picker.DocsView(google.picker.ViewId.DOCS)
+      .setMimeTypes(
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
+        'application/vnd.ms-excel,text/csv,' +
+        'application/vnd.google-apps.spreadsheet'
+      )
+      .setOwnedByMe(true)
+      .setLabel('Els meus fitxers');
+
+    // 🤝 Fitxers compartits amb mi
+    const sharedView = new google.picker.DocsView(google.picker.ViewId.DOCS)
+      .setMimeTypes(
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
+        'application/vnd.ms-excel,text/csv,' +
+        'application/vnd.google-apps.spreadsheet'
+      )
+      .setOwnedByMe(false)
+      .setLabel('Compartits amb mi');
 
     const picker = new google.picker.PickerBuilder()
-      .addView(view)
+      .addView(myFilesView)
+      .addView(sharedView)
       .setOAuthToken(this.oauthToken)
       .setDeveloperKey(this.developerKey)
       .setCallback(this.pickerCallback.bind(this))
