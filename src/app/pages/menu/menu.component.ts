@@ -83,12 +83,23 @@ export class MenuComponent implements OnInit {
   }
 
   private onPickerApiLoad() {
+    // Vista per defecte (els teus fitxers)
     const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
       .setMimeTypes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv')
-      .setSelectFolderEnabled(false);
+      .setSelectFolderEnabled(false)
+      .setOwnedByMe(true);
+
+    // Vista addicional: Fitxers compartits amb tu
+    const sharedView = new google.picker.DocsView(google.picker.ViewId.DOCS)
+      .setLabel('Compartits amb mi')
+      .setMimeTypes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv')
+      .setIncludeFolders(true)
+      .setOwnedByMe(false)          // Mostra fitxers NO propietat teva
+      .setEnableTeamDrives(true);   //Per si tens fitxers compartits en drives d’equip
 
     const picker = new google.picker.PickerBuilder()
-      .addView(view)
+      .addView(view)        // Els teus fitxers
+      .addView(sharedView)  // Fitxers compartits amb tu
       .setOAuthToken(this.oauthToken)
       .setDeveloperKey(this.developerKey)
       .setCallback(this.pickerCallback.bind(this))
