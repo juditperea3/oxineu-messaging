@@ -83,33 +83,12 @@ export class MenuComponent implements OnInit {
   }
 
   private onPickerApiLoad() {
-    // Vista principal: mostra TOTS els Excel que pots veure (teus + compartits)
     const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
-      .setMimeTypes(
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
-        'application/vnd.ms-excel,' +
-        'text/csv'
-      )
-      .setSelectFolderEnabled(false)
-      .setOwnedByMe(false)        // 👉 Ara també mostra ELS COMPARTITS
-      .setIncludeFolders(true)
-      .setEnableTeamDrives(true);
-
-    // Vista addicional (opcional): només els compartits amb tu
-    const sharedView = new google.picker.DocsView(google.picker.ViewId.DOCS)
-      .setLabel('Compartits amb mi')
-      .setMimeTypes(
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
-        'application/vnd.ms-excel,' +
-        'text/csv'
-      )
-      .setIncludeFolders(true)
-      .setOwnedByMe(false)        // Mostra fitxers NO propietat teva
-      .setEnableTeamDrives(true);
+      .setMimeTypes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv')
+      .setSelectFolderEnabled(false);
 
     const picker = new google.picker.PickerBuilder()
-      .addView(view)        // Vista principal (teus + compartits)
-      .addView(sharedView)  // Vista separada (compartits)
+      .addView(view)
       .setOAuthToken(this.oauthToken)
       .setDeveloperKey(this.developerKey)
       .setCallback(this.pickerCallback.bind(this))
