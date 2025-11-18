@@ -2,8 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+
+  <!-- Google OAuth (GIS) -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://apis.google.com/js/api.js" async defer></script>
+
+  <!-- Google API (gapi) amb callback -->
+  <script src="https://apis.google.com/js/api.js?onload=onGapiLoad" async defer></script>
+
+  <script>
+    // Es crida automàticament quan gapi ha acabat de carregar
+    function onGapiLoad() {
+      console.log("✔️ gapi carregat");
+      gapi.load('client', () => {
+        console.log("✔️ gapi client carregat");
+      });
+      gapi.load('picker', () => {
+        console.log("✔️ picker carregat");
+      });
+    }
+  </script>
+
   <title>OxineuMessages</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
