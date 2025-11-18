@@ -25,13 +25,16 @@ export class MenuComponent implements OnInit {
   availableDates: string[] = [];
   selectedDate = '';
 
-  // Clau i client ID del teu projecte
   private developerKey = 'AIzaSyD29H9QeKEhyi55pONwJ1WtdZWhWkfezyE';
   private clientId = '934370018846-36eq92j7ifpvpsbqgiun82s3cla96glo.apps.googleusercontent.com';
   private scope = 'https://www.googleapis.com/auth/drive.readonly';
   private oauthToken = '';
 
   constructor(private router: Router) {
+    window.addEventListener("gapi-loaded", () => {
+      console.log("✔️ Angular detecta que gapi està llest");
+    });
+
     const hora = new Date().getHours();
     if (hora >= 6 && hora < 12) this.salutacio = 'Bon dia';
     else if (hora >= 12 && hora < 20) this.salutacio = 'Bona tarda';
@@ -55,7 +58,7 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  /** 🔑 Inicia sessió i obre selector */
+  /** 🔑 Inicia sessió Google */
   async onGoogleDriveLogin() {
     try {
       const tokenClient = google.accounts.oauth2.initTokenClient({
@@ -83,23 +86,18 @@ export class MenuComponent implements OnInit {
   }
 
   private onPickerApiLoad() {
-    // 📄 Els MEUS fitxers
+    const mimeTypes =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
+      'application/vnd.ms-excel,text/csv,' +
+      'application/vnd.google-apps.spreadsheet';
+
     const myFilesView = new google.picker.DocsView(google.picker.ViewId.DOCS)
-      .setMimeTypes(
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
-        'application/vnd.ms-excel,text/csv,' +
-        'application/vnd.google-apps.spreadsheet'
-      )
+      .setMimeTypes(mimeTypes)
       .setOwnedByMe(true)
       .setLabel('Els meus fitxers');
 
-    // 🤝 Fitxers compartits amb mi
     const sharedView = new google.picker.DocsView(google.picker.ViewId.DOCS)
-      .setMimeTypes(
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
-        'application/vnd.ms-excel,text/csv,' +
-        'application/vnd.google-apps.spreadsheet'
-      )
+      .setMimeTypes(mimeTypes)
       .setOwnedByMe(false)
       .setLabel('Compartits amb mi');
 
@@ -123,24 +121,78 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  /** 📥 Descarrega fitxer seleccionat */
-  private async downloadFile(fileId: string, fileName: string) {
-    try {
-      const response = await gapi.client.drive.files.get({ fileId, alt: 'media' });
-      const binary = response.body;
-      const workbook = XLSX.read(binary, { type: 'binary' });
+  /** 🔧 Converteix ArrayBuffer → binari */
+  private arrayBufferToBinaryString(buffer: ArrayBuffer): string {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const length = bytes.byteLength;
 
-      this.workbook = workbook;
-      this.fileName = fileName;
-      this.sheetNames = workbook.SheetNames;
-      this.selectedSheet = '';
-      this.filteredData = [];
-      this.availableDates = [];
-      this.selectedDate = '';
-    } catch (err) {
-      console.error('Error descarregant fitxer:', err);
+    for (let i = 0; i < length; i++) {
+      binary += String.fromCharCode(bytes[i]);
     }
+
+    return binary;
   }
+
+  private async downloadBinaryFromDrive(url: string): Promise<ArrayBuffer> {
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${this.oauthToken}`
+    }
+  });
+
+  return await res.arrayBuffer();
+}
+
+  /** 📥 Descarrega fitxer (Excel i Google Sheets) */
+  private async downloadFile(fileId: string, fileName: string) {
+  try {
+    // 1️⃣ Agafem metadades
+    const metadata = await gapi.client.drive.files.get({
+      fileId,
+      fields: "mimeType,name"
+    });
+
+    const mimeType = metadata.result.mimeType;
+    let arrayBuffer: ArrayBuffer;
+
+    // 2️⃣ Si és Google Sheets → exportem a XLSX
+    if (mimeType === "application/vnd.google-apps.spreadsheet") {
+      console.log("Exportant Google Sheet a XLSX…");
+
+      const exportUrl =
+        `https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=` +
+        encodeURIComponent("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+      arrayBuffer = await this.downloadBinaryFromDrive(exportUrl);
+    } else {
+      // 3️⃣ Fitxers Excel normals
+      const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
+      arrayBuffer = await this.downloadBinaryFromDrive(downloadUrl);
+    }
+
+    // 4️⃣ Convertim ArrayBuffer → binary per XLSX
+    const uint8 = new Uint8Array(arrayBuffer);
+    let binary = "";
+    for (let i = 0; i < uint8.byteLength; i++) {
+      binary += String.fromCharCode(uint8[i]);
+    }
+
+    // 5️⃣ Llegim workbook correctament
+    const workbook = XLSX.read(binary, { type: "binary" });
+
+    this.workbook = workbook;
+    this.fileName = fileName;
+    this.sheetNames = workbook.SheetNames;
+    this.selectedSheet = "";
+    this.filteredData = [];
+    this.availableDates = [];
+    this.selectedDate = "";
+
+  } catch (err) {
+    console.error("❌ Error descarregant o convertint fitxer:", err);
+  }
+}
 
   // 📁 Fitxer local
   onFileSelected(event: Event) {
@@ -165,30 +217,49 @@ export class MenuComponent implements OnInit {
   }
 
   onSheetSelected(sheetName: string) {
-    if (!this.workbook) return;
+  if (!this.workbook) return;
 
-    const sheet = this.workbook.Sheets[sheetName];
-    this.excelData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    this.filteredData = [];
-    this.availableDates = [];
-    this.selectedDate = '';
+  const sheet = this.workbook.Sheets[sheetName];
+  this.excelData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
+  this.filteredData = [];
+  this.availableDates = [];
+  this.selectedDate = '';
 
-    const datesSet = new Set<string>();
-    this.excelData.forEach(row => {
-      const cellValue = row[0];
-      if (typeof cellValue === 'number') {
-        const parsed = XLSX.SSF.parse_date_code(cellValue);
-        if (parsed) {
-          const d = new Date(parsed.y, parsed.m - 1, parsed.d);
-          datesSet.add(d.toLocaleDateString('ca-ES'));
-        }
-      } else if (typeof cellValue === 'string' && !isNaN(Date.parse(cellValue))) {
-        datesSet.add(new Date(cellValue).toLocaleDateString('ca-ES'));
+  const datesSet = new Set<string>();
+
+  for (const row of this.excelData) {
+    const val = row[0];
+
+    if (!val) continue;
+
+    let dateObj: Date | null = null;
+
+    // 🔹 1. Si és número Excel → convertir a data
+    if (typeof val === 'number') {
+      const parsed = XLSX.SSF.parse_date_code(val);
+      if (parsed) {
+        dateObj = new Date(parsed.y, parsed.m - 1, parsed.d);
       }
-    });
+    }
 
-    this.availableDates = Array.from(datesSet);
+    // 🔹 2. Si ja és string → detectar format "mié 01/01/2025"
+    else if (typeof val === 'string') {
+
+      // Elimina nom del dia si existeix
+      const cleaned = val.replace(/^[^\d]*/g, '');
+
+      if (!isNaN(Date.parse(cleaned))) {
+        dateObj = new Date(cleaned);
+      }
+    }
+
+    if (dateObj) {
+      datesSet.add(dateObj.toLocaleDateString('ca-ES'));
+    }
   }
+
+  this.availableDates = Array.from(datesSet);
+}
 
   onDateSelected() {
     if (!this.selectedDate) return;
@@ -205,6 +276,7 @@ export class MenuComponent implements OnInit {
       }
       return formatted === this.selectedDate;
     });
+
     if (startIndex === -1) return;
 
     const endIndex = startIndex + 23;
