@@ -13,9 +13,16 @@
     // Es crida automàticament quan gapi ha acabat de carregar
     function onGapiLoad() {
       console.log("✔️ gapi carregat");
+
       gapi.load('client', () => {
         console.log("✔️ gapi client carregat");
+
+        // ⭐ OBLIGATORI: carregar explícitament l’API Drive v3
+        gapi.client.load("drive", "v3").then(() => {
+          console.log("✔️ Drive API carregada");
+        });
       });
+
       gapi.load('picker', () => {
         console.log("✔️ picker carregat");
       });
